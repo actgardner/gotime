@@ -1,0 +1,39 @@
+body {
+  font-family: "Roboto"
+}
+
+h2 {
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  max-width: 600px;
+}
+
+h4 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#help-container {
+  margin: auto;
+  width: 600px;
+}
+
+.button-group {
+  float: left;
+  max-width: 180px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #CCC;
+  drop-shadow: 4px 4px #EEE;
+  min-height: 400px;
+  margin: 5px;
+}
+
+.group-button {
+  padding: 5px;
+  text-decoration: underline;
+  cursor: pointer;
+}

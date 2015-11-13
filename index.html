@@ -1,0 +1,516 @@
+<head>
+  <title>It's Go time</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+  <script src="zepto.js"></script>
+  <script>
+  var fmtParts = {
+    "Year": [
+      {
+        "short-name": "Year",
+        "name": "Four-digit year",
+        "fmt": "2006",
+      },
+      {
+        "short-name": "Year",
+        "name": "Two-digit year",
+        "fmt": "06",
+      }
+    ],
+    "Month": [
+      {
+        "short-name": "Month",
+        "name": "The full name of the month",
+        "fmt": "January",
+      },
+      {
+        "short-name": "Month",
+        "name": "The three-letter abbreviation for the month",
+        "fmt": "Jan",
+      },
+      {
+        "short-name": "Month",
+        "name": "The number of the month, with no leading 0",
+        "fmt": "1",
+      },
+      {
+        "short-name": "Month",
+        "name": "The number of the month, padded with a leading 0",
+        "fmt": "01",
+      }
+    ],
+    "Day": [
+      {
+        "short-name": "Day",
+        "name": "The number of the day, with no leading 0",
+        "fmt": "2",
+      },
+      {
+        "short-name": "Day",
+        "name": "The number of the day, padded with a leading space",
+        "fmt": "_2",
+      },
+      {
+        "short-name": "Day",
+        "name": "The number of the day, padded with a leading zero",
+        "fmt": "02",
+      },
+      {
+        "short-name": "Day",
+        "name": "The three-letter abbreviation for the day of the week",
+        "fmt": "Mon",
+      },
+      {
+        "short-name": "Day",
+        "name": "The full name of the day of the week",
+        "fmt": "Monday",
+      },
+    ],
+    "Hour": [
+      {
+        "short-name": "Hour",
+        "name": "The twenty-four hour time",
+        "fmt": "15",
+      },
+      {
+        "short-name": "Hour",
+        "name": "The twelve hour time, with no leading zero",
+        "fmt": "3",
+      },
+      {
+        "short-name": "Hour",
+        "name": "The twelve hour time, padded with a leading zero",
+        "fmt": "03",
+      },
+    ],
+    "Minute": [
+      {
+        "short-name": "Minutes",
+        "name": "The number of minutes, with no leading zero",
+        "fmt": "4",
+      },
+      {
+        "short-name": "Minutes",
+        "name": "The number of minutes, padded with a leading zero",
+        "fmt": "04",
+      },
+    ],
+    "Seconds": [
+      {
+        "short-name": "Seconds",
+        "name": "The number of seconds, with no leading zero",
+        "fmt": "5",
+      },
+      {
+        "short-name": "Seconds",
+        "name": "The number of seconds, padded with a leading zero",
+        "fmt": "05",
+      },
+    ],
+    "AM/PM": [
+      {
+        "short-name": "AM/PM",
+        "name": "The time of day (AM or PM), in all upper-case",
+        "fmt": "PM",
+      },
+      {
+        "short-name": "AM/PM",
+        "name": "The time of day (am or pm), in all lower-case",
+        "fmt": "pm",
+      },
+    ],
+    "Milliseconds": [
+      {
+        "short-name": "Milliseconds",
+        "name": "The number of milliseconds - must be exactly three digits long",
+        "fmt": ".000",
+      },
+      {
+        "short-name": "Milliseconds",
+        "name": "The number of milliseconds - may be up to three digits long",
+        "fmt": ".999",
+      }
+    ],
+    "Microseconds": [
+      {
+        "short-name": "Microseconds",
+        "name": "The number of microseconds - must be exactly six digits long",
+        "fmt": ".000000",
+      },
+      {
+        "short-name": "Microseconds",
+        "name": "The number of microseconds - may be up to six digits long",
+        "fmt": ".999999",
+      }
+    ],
+    "Timezone": [
+      {
+        "short-name": "Timezone",
+        "name": "The name of the time zone",
+        "fmt": "MST",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "ISO 8601 - either the numeric offset or a 'Z' for UTC",
+        "fmt": "Z0700",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "ISO 8601 - either the numeric offset or a 'Z' for UTC - with seconds",
+        "fmt": "Z070000",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "ISO 8601 - either the numeric offset or a 'Z' for UTC - with a colon separator",
+        "fmt": "Z07:00",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "ISO 8601 - either the numeric offset or a 'Z' for UTC - with seconds and colon separators",
+        "fmt": "Z07:00:00",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "The offset from UTC in hours and minutes",
+        "fmt": "-0700",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "The offset from UTC in hours, minutes and seconds",
+        "fmt": "-070000",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "The offset from UTC in hours and minutes, with a colon delimiter",
+        "fmt": "-07:00",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "The offset from UTC in hours, minutes and seconds, with a colon delimiter",
+        "fmt": "-07:00:00",
+      },
+      {
+        "short-name": "Timezone",
+        "name": "The offset from UTC in hours",
+        "fmt": "-07",
+      },
+    ]
+  };
+
+  function tokenizeFormat(str) {
+    var tokens = [];
+    var i = 0;
+    while (i < str.length) {
+      switch (str[i]) {
+        case "J":
+          if (str.slice(i, i+7) == "January") {
+            tokens.push(fmtParts["Month"][0])
+            i += 7
+          } else if (str.slice(i, i+3) == "Jan") {
+            tokens.push(fmtParts["Month"][1])
+            i += 3
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "M":
+          if (str.slice(i, i+6) == "Monday") {
+            tokens.push(fmtParts["Day"][4])
+            i += 6
+          } else if (str.slice(i, i+3) == "Mon") {
+            tokens.push(fmtParts["Day"][3])
+            i += 3
+          } else if (str.slice(i, i+3) == "MST") {
+            tokens.push(fmtParts["Timezone"][0])
+            i += 3
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "0":
+          switch (str[i+1]) {
+            case "1":
+              tokens.push(fmtParts["Month"][3])
+              i += 2
+              break;
+            case "2":
+              tokens.push(fmtParts["Day"][2])
+              i += 2
+              break;
+            case "3":
+              tokens.push(fmtParts["Hour"][2])
+              i += 2
+              break;
+            case "4":
+              tokens.push(fmtParts["Minute"][1])
+              i += 2
+              break;
+            case "5":
+              tokens.push(fmtParts["Seconds"][1])
+              i += 2
+              break;
+            case "6":
+              tokens.push(fmtParts["Year"][1])
+              i += 2
+              break;
+            default:
+              tokens.push({"name":"Unknown", "fmt":str[i]})
+              i += 1
+              break;
+          } 
+          break;
+        case "1":
+          if (str.slice(i, i+2) == "15") {
+            tokens.push(fmtParts["Hour"][0])
+            i += 2
+          } else {
+            tokens.push(fmtParts["Month"][2])
+            i += 1
+          }
+          break;
+        case "2":
+          if (str.slice(i, i+4) == "2006") {
+            tokens.push(fmtParts["Year"][0])
+            i += 4
+          } else {
+            tokens.push(fmtParts["Day"][0]) 
+            i += 1
+          }
+          break;
+        case "_":
+          if (str[i+1] == "2") {
+            tokens.push(fmtParts["Day"][1])
+            i += 2
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "3":
+          tokens.push(fmtParts["Hour"][1])
+          i += 1
+          break;
+        case "4":
+          tokens.push(fmtParts["Minute"][0])
+          i += 1
+          break;
+        case "5":
+          tokens.push(fmtParts["Seconds"][0])
+          i += 1
+          break;
+        case "P":
+          if (str[i+1] == "M") {
+            tokens.push(fmtParts["AM/PM"][0])
+            i += 2
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "p":
+          if (str[i+1] == "m") {
+            tokens.push(fmtParts["AM/PM"][1])
+            i += 2
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "-":
+          if (str.slice(i, i+7) == "-070000") {
+            tokens.push(fmtParts["Timezone"][6])
+            i += 7
+          } else if (str.slice(i, i+9) == "-07:00:00") {
+            tokens.push(fmtParts["Timezone"][8])
+            i += 9
+          } else if (str.slice(i, i+5) == "-0700") {
+            tokens.push(fmtParts["Timezone"][5])
+            i += 5
+          } else if (str.slice(i, i+6) == "-07:00") {
+            tokens.push(fmtParts["Timezone"][7])
+            i += 6
+          } else if (str.slice(i, i+3) == "-07") {
+            tokens.push(fmtParts["Timezone"][9])
+            i += 3
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case "Z":
+          if (str.slice(i, i+7) == "Z070000") {
+            tokens.push(fmtParts["Timezone"][2])
+            i += 7
+          } else if (str.slice(i, i+9) == "Z07:00:00") {
+            tokens.push(fmtParts["Timezone"][4])
+            i += 9
+          } else if (str.slice(i, i+5) == "Z0700") {
+            tokens.push(fmtParts["Timezone"][1])
+            i += 5
+          } else if (str.slice(i, i+6) == "Z07:00") {
+            tokens.push(fmtParts["Timezone"][3])
+            i += 6
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        case ".":
+          if (str[i+1] == "9") {
+            var j = i+1;
+            for (; j < str.length; j++) {
+              if (str[j] != "9") { break }   
+            }
+            tokens.push({"short-name": "Fractional seconds", "fmt":str.slice(i, j)})
+            i = j
+          } else if (str[i+1] == "0") {
+            var j = i+1;
+            for (; j < str.length; j++) {
+              if (str[j] != "0") { break }   
+            }
+            tokens.push({"short-name": "Fractional seconds", "fmt":str.slice(i, j)})
+            i = j
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]})
+            i += 1
+          }
+          break;
+        default:
+          if (str[i] == " ") {
+            tokens.push({"name":"Unknown", "fmt":"_"})
+          } else {
+            tokens.push({"name":"Unknown", "fmt":str[i]}) 
+          }
+          i += 1
+          break;
+      }
+    }
+    return tokens
+  }
+
+  function insertValue(val) {
+    var formatString = $("#format-string");
+    var caretStart = formatString.get(0).selectionStart;
+    var caretEnd = formatString.get(0).selectionEnd;
+    var oldVal = formatString.val();
+    formatString.val(oldVal.slice(0,caretStart) + val + oldVal.slice(caretEnd));
+    formatString.focus();
+    formatString.get(0).selectionStart = caretStart + val.length;
+    formatString.get(0).selectionEnd = caretStart + val.length;
+    drawParts();
+  }
+
+  function populateDialog() {
+    var formatString = $("#format-string");
+    formatString.val("Mon Jan _2 15:04:05 2006");
+    drawParts();
+    formatString.focus();
+    formatString.on('input', drawParts);
+    $(window).on('resize', drawParts);
+    $.each(fmtParts, function(name, partList){
+      var list = $('<div class="button-group">');
+      list.append("<h4>"+name+"</h4>");
+      $.each(partList, function(i, part){
+        var gbtn = $('<div class="group-button">'+part.fmt+'</div>');
+        gbtn.attr("title", part.name);
+        gbtn.click(function(){insertValue(part.fmt);});
+        list.append(gbtn);
+      });
+      $("#button-container").append(list);
+    });
+  }
+
+  var svgns = "http://www.w3.org/2000/svg";
+
+  function clearSvg(node) {
+    while(node.lastChild) {
+      node.removeChild(node.lastChild);
+    }
+  }
+
+  function drawParts() {
+    var x = 20;
+    var explain = $("#explanation").get(0);
+    var tokens = tokenizeFormat($("#format-string").val());
+    var elemGroup = document.createElementNS(svgns, "g");
+    var yfac = 1;
+    var lastUnknown = false;
+    
+    clearSvg(explain);
+    explain.appendChild(elemGroup);
+    $.each(tokens, function(i, token) {
+      var tokDraw = document.createElementNS(svgns, "text");
+      tokDraw.setAttribute("font-size", 24);
+      tokDraw.textContent = token.fmt;
+      elemGroup.appendChild(tokDraw);
+      var bbox = tokDraw.getBBox();
+      if (token.name == "Unknown") {
+        if (!lastUnknown) {
+          x += 10;
+        }
+        tokDraw.setAttribute("style", "fill: red; stroke: red;");
+        lastUnknown = true;
+      } else {
+        x += 10;
+        var textYPos = 85 - (bbox.height/2) - yfac*(bbox.height/2);
+        drawExplainer(elemGroup, token['short-name'], bbox.width, x, textYPos, yfac);
+        yfac = -1 * yfac;
+        lastUnknown = false;
+      }
+      tokDraw.setAttribute("x", x);
+      tokDraw.setAttribute("y", 80);
+      x += bbox.width;
+    });
+    var displace = (explain.offsetWidth - x)/2;
+    elemGroup.setAttribute("transform", "translate("+displace+", 0)");
+  }
+
+  function buildSvgShape(points) {
+    var path = "M "+points[0].x+" "+points[0].y
+    for (i=1; i<points.length; i++) {
+      path = path + " L" + points[i].x + " " + points[i].y
+    }
+    return path + " Z"
+  }
+
+  function drawExplainer(elemGroup, text, width, x, y, invert) {
+      var explainer = document.createElementNS(svgns, "path");
+      var desc = document.createElementNS(svgns, "text");
+      var bracePoints = [
+        {x:x, y:y},
+        {x:x, y:y-7*invert}, 
+        {x:x+(width/2)-3, y:y-7*invert}, 
+        {x:x+width/2, y:y-10*invert}, 
+        {x:x+(width/2)+3, y:y-7*invert}, 
+        {x:x+width, y:y-7*invert}, 
+        {x:x+width, y:y}, 
+        {x:x+width-4, y:y-4*invert}, 
+        {x:x+4, y:y-4*invert}
+      ];
+      explainer.setAttribute("d", buildSvgShape(bracePoints));
+      desc.textContent = text;
+      elemGroup.appendChild(explainer);
+      elemGroup.appendChild(desc);
+      var bbox = desc.getBBox();
+      desc.setAttribute("x", x+width/2);
+      desc.setAttribute("y", y+(bbox.height/2 - 5)+(bbox.height/2)*invert-30*invert);
+      desc.setAttribute("width", width);
+      desc.setAttribute("text-anchor", "middle");
+  }
+  </script>
+  <link rel="stylesheet" href="gotime.css" />
+</head>
+<body onload="populateDialog()">
+  <h2>It's Go time!</h2>
+  <div id="help-container">
+    <p>The boxes contain the various parts of Go date formats. Click on a date format part to add it to the format string. Hover over a part for more information.</p>
+    <p>Add delimiters (spaces, dashes, colons) by typing in the text box. Delimiters and other text that isn't recognized as part of the date will be highlighted in red.</p>
+  </div>
+  <div style="width: 100%;">
+  <svg id="explanation" style="width: 100%; height:130px;"></svg>
+  </div>
+  <input id="format-string" style="width: 601px; margin: auto; display: block;"/>
+  <div id="button-container" style="width: 900px; margin: 20px auto; padding: 0px;">
+  </div>
+</body>
