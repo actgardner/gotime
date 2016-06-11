@@ -1,9 +1,6 @@
 body {
-  font-family: "Roboto"
-}
-
-h2 {
-  text-align: center;
+  font-family: "Roboto";
+  margin-top: 80px;
 }
 
 p {
@@ -24,16 +21,123 @@ h4 {
 .button-group {
   float: left;
   max-width: 180px;
-  padding: 5px;
+  padding: 0px;
   text-align: center;
-  border: 1px solid #CCC;
-  drop-shadow: 4px 4px #EEE;
+  border: 1px solid #337ab7;
+  border-radius: 3px;
   min-height: 400px;
   margin: 5px;
+}
+
+.button-group > h4 {
+  margin: 0px;
+  padding: 5px;
+  background-color: #337ab7;
+  color: white;
 }
 
 .group-button {
   padding: 5px;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.header {
+  position: fixed;
+  padding-top: 5px;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  text: white;
+  background-color: #337ab7;
+}
+
+.header > h2 {
+  float: left;
+  color: white;
+  font-size: 22px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.navigation {
+  float: right;
+  margin-right: 20px;
+}
+
+.nav-button {
+  text-align: center;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 2px;
+  color: white;
+  float: right;
+}
+
+.active {
+  background-color: #1a3f5f;
+  border-radius: 5px;
+}
+
+.nav-button > a {
+  color: white;
+  text-decoration: none;
+}
+
+.clearall {
+  clear: both;
+}
+
+.input-block {
+  width: 600px;
+  margin: auto;
+  padding: 5px;
+  border: 1px solid #337ab7;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.input-group {
+  padding: 5px;
+}
+
+.input-group > label {
+  font-weight: bold;
+  display: inline-block;
+  width: 60px;
+}
+
+.input-group > input {
+  padding: 3px;
+  border-radius: 3px;
+  width: 500px; 
+}
+
+.date-part {
+  width: 137px; 
+  float: left;
+  padding: 0px;
+  border-radius: 2px;
+  border: 1px solid #337ab7;
+  margin: 5px;
+  padding: 0px;
+}
+
+.part-name {
+  display: inline-block;
+  color: white;
+  min-width: 60px;
+  background-color: #337ab7;
+  padding: 3px 5px;
+  margin-right: 10px;
+}
+
+#error-box {
+  border: 2px solid red;
+  border-radius: 3px;
+  padding: 5px;
+  margin: auto;
+  margin-bottom: 10px;
+  color: red;
+  width: 600px;
 }

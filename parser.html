@@ -1,0 +1,84 @@
+<head>
+  <title>It's Go time</title>
+  
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="gotime.css" />
+  <script src="zepto.js"></script>
+  <script src="gotime.js"></script>
+  <script>
+    function startup() {
+      var formatString = $("#format-string");
+      var dateString = $("#date-string");
+      formatString.val("Mon Jan _2 15:04:05 2006");
+      dateString.val("Tue Feb 05 18:12:45 2016");
+      formatString.on('input', parseTime);
+      dateString.on('input', parseTime);
+      parseTime();
+    }
+
+    function parseTime() {
+      var format = $("#format-string").val();
+      var date = $("#date-string").val();
+      var tokens = tokenizeFormat(format);
+      var parsedTime = parseTimeString(date, tokens);
+      console.log("Parsed: "+parsedTime);
+      $("#parse-fields").empty();
+      $.each(parsedTime, function(k, v) {
+        if (k == "err" || k == "failed") {
+          return
+        }
+        name = capitalizeFirstLetter(k);
+        var row = $("<div class=\"date-part\"></div>");
+        row.append("<span class=\"part-name\">"+name+"</span>");
+        row.append("<span class=\"part-value\">"+v+"</span>");
+        $("#parse-fields").append(row);
+        console.log("Field: "+name+" "+v);
+      });
+      $("#parse-fields").append("<div class=\"clearall\"></div>");
+      if (parsedTime["failed"]) {
+        $("#error-box").show();
+        $("#error-box").text("Error: " + parsedTime["err"]);
+      } else {
+        $("#error-box").hide();
+      }
+    }
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    } 
+  </script>
+</head>
+<body onload="startup()">
+  <div class="header">
+      <h2>It's Go time!</h2>
+      <div class="navigation">
+        <div class="nav-button">
+	  <a href="index.html">Builder</a>
+        </div>
+        <div class="nav-button active">
+ 	  <a href="#">Tester</a>
+	</div>
+      </div>
+      <div class="clearall"></div>
+    </div>
+  <div style="width: 100%;">
+    <div id="help-container">
+      <p> Enter a Go date format string and sample date. Note: this will parse the time zone, but it won't look up the offset or change the hour or minute fields. </p> 
+    </div> 
+    <div class="input-block">
+      <div class="input-group">
+        <label>Format</label>
+        <input id="format-string"/>
+      </div>
+      <div class="input-group">
+        <label>Date</label>
+        <input id="date-string" />
+      </div>
+    </div>
+    <div id="error-box">
+    </div>
+    <div id="parse-fields" class="input-block"> 
+    
+    </div>
+  </div>
+</body>
